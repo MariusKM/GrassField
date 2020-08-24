@@ -87,8 +87,22 @@
 			#pragma multi_compile_instancing
 
 			#pragma vertex vertBase
+		
 			#pragma fragment fragBase
 			#include "UnityStandardCoreForward.cginc"
+			#pragma vertex vert
+
+
+			float _Amount;
+
+			 void vert(inout appdata_full v) {
+
+			  if (v.vertex.y > 0.1f) {
+				  float sT = _SinTime.z * _Amount;
+				  v.vertex.x += sT;
+				  v.vertex.z += sT;
+			  }
+		  }
 
 			ENDCG
 		}
