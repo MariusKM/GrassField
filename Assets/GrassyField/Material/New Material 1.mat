@@ -56,8 +56,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WindDistortionMap:
-        m_Texture: {fileID: 2800000, guid: b13bb07ff3f67b84c9916fbae9aedca4, type: 3}
-        m_Scale: {x: 0.01, y: 0.01}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 1, y: 1}
     m_Floats:
     - _Amount: 1
@@ -76,8 +76,9 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WindFrecuency: 0.09
-    - _WindStrength: 1.11
+    - _WindFrecuency: 0.001
+    - _WindGustDistance: 0.25
+    - _WindStrength: 0.36
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

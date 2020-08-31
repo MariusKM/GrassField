@@ -4,7 +4,7 @@
 			 _Glossiness("Smoothness", Range(0,1)) = 0.5
 			_Metallic("Metallic", Range(0,1)) = 0.0
 			_Cutoff("Base Alpha cutoff", Range(0,.9)) = .5
-			_Amount("Bend Amount", Range(0,1)) = 0.1
+		
 
 			_WindDistortionMap("Wind Distortion Map", 2D) = "white" {}
 			//_WindFrequency("Wind Frequency", Vector) = (0.05, 0.05,0)
@@ -48,7 +48,7 @@
 					 // Takes the mesh's verts and turns it into a point in world space
 					 // this is the equivalent of Transform.TransformPoint on the scripting side
 					 float4 worldSpaceVertex = mul(unity_ObjectToWorld, localSpaceVertex);
-					 float2 offset = _WindDistortionMap_ST.zw + (_Time.y * _WindFrecuency);
+					 float2 offset = _WindDistortionMap_ST.zw;// +(_Time.y * _WindFrecuency);
 					 float2 uv = localSpaceVertex.zw * _WindDistortionMap_ST.xy +offset ; //_WindDistortionMap_ST.zw* _WindFrecuency*_Time.y;
 
 					 float3 windSample = (tex2Dlod(_WindDistortionMap, float4(uv.x,uv.y, 0, 0)).xyz) ;

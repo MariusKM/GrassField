@@ -1,5 +1,12 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
+#include "Packages/jp.keijiro.noiseshader/Shader/ClassicNoise2D.hlsl"
+
+#define INITIAL_WEIGHT 0.5
+#define NOISE_FUNC(coord, period) cnoise(coord)
+float4 color;
+float2 windDir;
+float time;
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
@@ -8,7 +15,25 @@ RWTexture2D<float4> Result;
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-    // TODO: insert actual code here!
 
-    Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    const float epsilon = 0.0001;
+
+    float2 uvSCL = id.xy*0.05 ;
+
+    float2 uv = uvSCL + float2(windDir.x, windDir.y) *time;// *_Time.y;
+    float o = 0.5;
+    float s =1;
+    float w = INITIAL_WEIGHT;
+
+    float2 coord = uv * s;
+    float2 period = s * 2.0;
+    o += NOISE_FUNC(coord, period) * w;
+
+    s *= 2.0;
+    w *= 0.5;
+
+
+//    float ns = snoise(i.xyz) / 2 + 0.5f;
+    // TODO: insert actual code here!
+    Result[id.xy] = float4(o, o, o, 0);// *color;
 }
