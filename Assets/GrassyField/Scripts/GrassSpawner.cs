@@ -40,8 +40,8 @@ public class GrassSpawner : MonoBehaviour
 
 
     public void Clear()
-    { 
-
+    {
+        if(generatedObjects == null)    cacheChildren();
         for (int i = 0; i < generatedObjects.Length; i++)
         {
             DestroyImmediate(generatedObjects[i]);
@@ -49,7 +49,15 @@ public class GrassSpawner : MonoBehaviour
         generatedObjects = null;
     }
 
-
+    void cacheChildren()
+    {
+        Transform[] generatedObjectsT = GetComponentsInChildren<Transform>();
+        generatedObjects = new GameObject[generatedObjectsT.Length];
+        for (int i = 1; i < generatedObjectsT.Length; i++)
+        {
+            generatedObjects[i] = generatedObjectsT[i].gameObject;
+        }
+    }
 
 
     public void fitToGroundPlane()
