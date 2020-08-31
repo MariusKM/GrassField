@@ -7,6 +7,7 @@
 float4 color;
 float2 windDir;
 float time;
+float frequency;
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
@@ -20,7 +21,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     float2 uvSCL = id.xy*0.05 ;
 
-    float2 uv = uvSCL + float2(windDir.x, windDir.y) *time;// *_Time.y;
+    float2 uv = uvSCL + (float2(windDir.x, windDir.y) *time*frequency);// *_Time.y;
     float o = 0.5;
     float s =1;
     float w = INITIAL_WEIGHT;

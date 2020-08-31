@@ -8,7 +8,7 @@
 
 			_WindDistortionMap("Wind Distortion Map", 2D) = "white" {}
 			//_WindFrequency("Wind Frequency", Vector) = (0.05, 0.05,0)
-			_WindFrecuency("Wind Frecuency",Range(0.001,100)) = 1
+			_WindFrecuency("Wind Frecuency",Range(0.001,10)) = 1
 			_WindStrength("Wind Strength", Range(0, 2)) = 0.3
 			//_WindGustDistance("Distance between gusts",Range(0.001,50)) = .25
 			_WindDirection("Wind Direction", vector) = (1,0, 1,0)

@@ -76,9 +76,9 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WindFrecuency: 0.001
+    - _WindFrecuency: 4.26
     - _WindGustDistance: 0.25
-    - _WindStrength: 0.36
+    - _WindStrength: 0.45
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

@@ -27,12 +27,14 @@ public class ComputeScript : MonoBehaviour
     {
 
         Vector2 windDir = new Vector2(Mat.GetVector("_WindDirection").x, Mat.GetVector("_WindDirection").z);
+        float frequency = Mat.GetFloat("_WindFrecuency");
         int kernel = compute.FindKernel("CSMain");
 
         
 
         compute.SetTexture(kernel, "Result", result);
         compute.SetFloat("time", Time.time);
+        compute.SetFloat("frequency", frequency);
         compute.SetVector("windDir", windDir);
         compute.Dispatch(kernel, 128 / 8, 128 / 8, 1);
     }
