@@ -8,6 +8,7 @@ float4 color;
 float2 windDir;
 float time;
 float frequency;
+float scl;
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
@@ -19,7 +20,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     const float epsilon = 0.0001;
 
-    float2 uvSCL = id.xy*0.05 ;
+    float2 uvSCL = id.xy*scl ;
 
     float2 uv = uvSCL + (float2(windDir.x, windDir.y) *time*frequency);// *_Time.y;
     float o = 0.5;
@@ -35,6 +36,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
 
 //    float ns = snoise(i.xyz) / 2 + 0.5f;
-    // TODO: insert actual code here!
+
     Result[id.xy] = float4(o, o, o, 0);// *color;
 }

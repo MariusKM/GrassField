@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class ComputeScript : MonoBehaviour
@@ -9,6 +10,10 @@ public class ComputeScript : MonoBehaviour
     public MeshRenderer rend;
     public RenderTexture result;
     public Material Mat;
+    [Range(0,0.5f)]
+    public float fractalScale = 0.05f;
+    BoxCollider spawnArea;
+    Bounds spawnBounds;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +23,11 @@ public class ComputeScript : MonoBehaviour
         result.Create();
         rend.material.SetTexture("_MainTex", result);
         Mat.SetTexture("_WindDistortionMap", result);
+        spawnArea = GetComponent<BoxCollider>();
+        spawnArea.isTrigger = true;
+        spawnBounds = spawnArea.bounds;
 
+        Mat.SetVector("_BoundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
 
     }
 
@@ -30,8 +39,8 @@ public class ComputeScript : MonoBehaviour
         float frequency = Mat.GetFloat("_WindFrecuency");
         int kernel = compute.FindKernel("CSMain");
 
-        
 
+        compute.SetFloat("scl", fractalScale);
         compute.SetTexture(kernel, "Result", result);
         compute.SetFloat("time", Time.time);
         compute.SetFloat("frequency", frequency);

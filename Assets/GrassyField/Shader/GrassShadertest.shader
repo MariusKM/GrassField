@@ -12,6 +12,7 @@
 			_WindStrength("Wind Strength", Range(0, 2)) = 0.3
 			//_WindGustDistance("Distance between gusts",Range(0.001,50)) = .25
 			_WindDirection("Wind Direction", vector) = (1,0, 1,0)
+			_BoundsSize("Bounds Size", vector) = (0,0,0,0)
 	}
 		SubShader{
 			Tags{ "Queue" = "AlphaTest" "IgnoreProjector" = "True" "RenderType" = "TransparentCutout" }
@@ -30,7 +31,11 @@
 
 				 struct Input {
 					 float2 uv_MainTex;
+					// float3 worldNormal;
+					 float3 worldPos;
+
 				 };
+
 
 				 sampler2D _WindDistortionMap;
 				 float _ScrollSpeed;
@@ -39,6 +44,7 @@
 				 half _WindGustDistance;
 				 half _WindStrength;
 				 float3 _WindDirection;
+				 float2 _BoundsSize;
 
 				 // our vert modification function
 				 void vert(inout appdata_full v)
@@ -48,8 +54,16 @@
 					 // Takes the mesh's verts and turns it into a point in world space
 					 // this is the equivalent of Transform.TransformPoint on the scripting side
 					 float4 worldSpaceVertex = mul(unity_ObjectToWorld, localSpaceVertex);
+					 float2 worldSpaceNorm = worldSpaceVertex.xz;
+					 worldSpaceNorm.x /= _BoundsSize.x;
+				
+					 worldSpaceNorm.x = 1 - (worldSpaceNorm.x * 1);
+
+					 worldSpaceNorm.y /= _BoundsSize.y;
+				 
+					 worldSpaceNorm.y = 1 - (worldSpaceNorm.y * 1);
 					 float2 offset = _WindDistortionMap_ST.zw;// +(_Time.y * _WindFrecuency);
-					 float2 uv = localSpaceVertex.zw * _WindDistortionMap_ST.xy +offset ; //_WindDistortionMap_ST.zw* _WindFrecuency*_Time.y;
+					 float2 uv = worldSpaceNorm * _WindDistortionMap_ST.xy +offset ; //_WindDistortionMap_ST.zw* _WindFrecuency*_Time.y;
 
 					 float3 windSample = (tex2Dlod(_WindDistortionMap, float4(uv.x,uv.y, 0, 0)).xyz) ;
 					 // Height of the vertex in the range (0,1)
@@ -76,11 +90,19 @@
 
 				 void surf(Input IN, inout SurfaceOutputStandard o) {
 					 // Albedo comes from a texture
+					 float2 worldPos = IN.worldPos.xz;
+				
+					 worldPos.x = worldPos.x / _BoundsSize.x;
+					 worldPos.x = 1 - (worldPos.x * 1);
+					 worldPos.y = worldPos.y / _BoundsSize.y;
+					 worldPos.y = 1 - (worldPos.y * 1);
+					 fixed4 cN = tex2D(_WindDistortionMap, worldPos);
 					 fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-					 o.Albedo = c.rgb;
+					 o.Albedo = cN.rgb * c.rgb;
 					 o.Alpha = c.a;
 					 o.Metallic = _Metallic;
 					 o.Smoothness = _Glossiness;
+	
 				 }
 				 ENDCG
 			 }

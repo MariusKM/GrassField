@@ -78,9 +78,10 @@ Material:
     - _UVSec: 0
     - _WindFrecuency: 4.26
     - _WindGustDistance: 0.25
-    - _WindStrength: 0.45
+    - _WindStrength: 1.06
     - _ZWrite: 1
     m_Colors:
+    - _BoundsSize: {r: 10, g: 10, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
