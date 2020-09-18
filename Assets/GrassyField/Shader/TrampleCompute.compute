@@ -1,0 +1,31 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+float2 objectPos;
+float radius;
+
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+RWTexture2D<float4> Result;
+
+[numthreads(8, 8, 1)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    float2 pos = id.xy;
+    
+ 
+    float distX = (1-objectPos.x) - (id.x/(float)128);
+    float distY = (1-objectPos.y) - (id.y/(float)128);
+    float dist = sqrt(pow(distX,2) + pow(distY,2));
+    float3 color;
+
+    if (dist < radius) {
+        color = float3(1 - dist, 0, 0);
+    }
+    else {
+        color = float3(0, 0, 0);
+    }
+   
+     
+    Result[id.xy] = float4(color, 1.0f);// *color;
+}

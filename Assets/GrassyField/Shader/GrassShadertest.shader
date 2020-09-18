@@ -7,10 +7,11 @@
 		
 
 			_WindDistortionMap("Wind Distortion Map", 2D) = "white" {}
-			//_WindFrequency("Wind Frequency", Vector) = (0.05, 0.05,0)
+			_TrampleMap("Trample Map", 2D) = "white" {}
+		
 			_WindFrecuency("Wind Frecuency",Range(0.001,10)) = 1
 			_WindStrength("Wind Strength", Range(0, 2)) = 0.3
-			//_WindGustDistance("Distance between gusts",Range(0.001,50)) = .25
+			
 			_WindDirection("Wind Direction", vector) = (1,0, 1,0)
 			_BoundsSize("Bounds Size", vector) = (0,0,0,0)
 	}
@@ -38,6 +39,7 @@
 
 
 				 sampler2D _WindDistortionMap;
+				 sampler2D _TrampleMap;
 				 float _ScrollSpeed;
 				 float4 _WindDistortionMap_ST;
 				 float _WindFrecuency;
@@ -66,11 +68,13 @@
 					 float2 uv = worldSpaceNorm * _WindDistortionMap_ST.xy +offset ; //_WindDistortionMap_ST.zw* _WindFrecuency*_Time.y;
 
 					 float3 windSample = (tex2Dlod(_WindDistortionMap, float4(uv.x,uv.y, 0, 0)).xyz) ;
+					 float3 trample = (tex2Dlod(_TrampleMap, float4(worldSpaceNorm, 0, 0)).xyz) ;
 					 // Height of the vertex in the range (0,1)
 					 float height = (localSpaceVertex.y > 0.1) ? 1 : 0;
 					
 					 worldSpaceVertex.x +=  (_WindStrength * windSample.x* _WindDirection.x)*height;
 					 worldSpaceVertex.z +=  (_WindStrength * windSample.x* _WindDirection.z)*height;
+					 worldSpaceVertex.y -= trample.x;
 
 					 // takes the new modified position of the vert in world space and then puts it back in local space
 					 v.vertex = mul(unity_WorldToObject, worldSpaceVertex);
