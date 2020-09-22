@@ -57,7 +57,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 	float3 color;
 
 	if (dist < radius) {
-		color = float3(1 - dist, o,o2);
+		color = float3(1 - (dist/radius), o,o2);
 	}
 	else {
 		color = float3(0, o, o2);

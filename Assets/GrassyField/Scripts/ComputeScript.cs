@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class ComputeScript : MonoBehaviour
 {
-    public ComputeShader compute,computeTrample;
+    public ComputeShader compute;
     public Color color;
     public MeshRenderer rend;
-    public RenderTexture result,result2;
+    public RenderTexture result;
     public Material Mat;
     [Header("Noise Stuff")]
     [Range(0,0.5f)]
@@ -29,10 +29,7 @@ public class ComputeScript : MonoBehaviour
         result.enableRandomWrite = true;
         result.Create();
 
-        result2 = new RenderTexture(128, 128, 24);
-        result2.enableRandomWrite = true;
-        result2.Create();
-
+       
         rend.material.SetTexture("_MainTex", result);
         Mat.SetTexture("_WindDistortionMap", result);
         Mat.SetTexture("_TrampleMap", result);
@@ -50,21 +47,16 @@ public class ComputeScript : MonoBehaviour
     {
 
         tramplePos = new Vector2( trampleObj.transform.position.x,trampleObj.transform.position.z);
-      //  tramplePos.x /= spawnBounds.size.x;
-      //  tramplePos.y /= spawnBounds.size.z;
-       /* int kernel2 = computeTrample.FindKernel("CSMain");
-        computeTrample.SetTexture(kernel2, "Result", result2);
-        computeTrample.SetFloat("radius", radius/10);
-        computeTrample.SetVector("objectPos",tramplePos );
-        computeTrample.Dispatch(kernel2, 128 / 8, 128 / 8, 1);*/
+
 
 
 
         Vector2 windDir = new Vector2(Mat.GetVector("_WindDirection").x, Mat.GetVector("_WindDirection").z);
         float frequency = Mat.GetFloat("_WindFrecuency");
+        Mat.SetVector("_ObjectPos", trampleObj.transform.position);
         int kernel = compute.FindKernel("CSMain");
-        compute.SetFloat("radius", radius / 10);
-        compute.SetVector("objectPos", tramplePos);
+        compute.SetFloat("radius", radius / 5);
+        compute.SetVector("objectPos",tramplePos );
         compute.SetVector("bottomLeft", bottomLeft);
         compute.SetVector("boundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
         compute.SetFloat("scl", fractalScale);
