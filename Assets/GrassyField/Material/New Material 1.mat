@@ -80,11 +80,12 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WindFrecuency: 4.26
+    - _WindFrecuency: 0.83
     - _WindGustDistance: 0.25
-    - _WindStrength: 1.06
+    - _WindStrength: 0.95
     - _ZWrite: 1
     m_Colors:
+    - _BottomLeft: {r: -7.55, g: -1.55, b: 0, a: 0}
     - _BoundsSize: {r: 10, g: 10, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

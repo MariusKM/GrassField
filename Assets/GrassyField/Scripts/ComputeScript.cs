@@ -20,6 +20,7 @@ public class ComputeScript : MonoBehaviour
     public Vector2 tramplePos;
     [Range(0,1)]
     public float radius;
+    private Vector2 bottomLeft;
     // Start is called before the first frame update
     void Start()
     {
@@ -32,14 +33,15 @@ public class ComputeScript : MonoBehaviour
         result2.enableRandomWrite = true;
         result2.Create();
 
-        rend.material.SetTexture("_MainTex", result2);
+        rend.material.SetTexture("_MainTex", result);
         Mat.SetTexture("_WindDistortionMap", result);
-        Mat.SetTexture("_TrampleMap", result2);
+        Mat.SetTexture("_TrampleMap", result);
         spawnArea = GetComponent<BoxCollider>();
         spawnArea.isTrigger = true;
         spawnBounds = spawnArea.bounds;
-
+        bottomLeft = GetComponent<GrassSpawner>().getBottomLeft();
         Mat.SetVector("_BoundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
+        Mat.SetVector("_BottomLeft", bottomLeft);
 
     }
 
@@ -48,19 +50,23 @@ public class ComputeScript : MonoBehaviour
     {
 
         tramplePos = new Vector2( trampleObj.transform.position.x,trampleObj.transform.position.z);
-        tramplePos.x /= spawnBounds.size.x;
-        tramplePos.y /= spawnBounds.size.z;
-        int kernel2 = computeTrample.FindKernel("CSMain");
+      //  tramplePos.x /= spawnBounds.size.x;
+      //  tramplePos.y /= spawnBounds.size.z;
+       /* int kernel2 = computeTrample.FindKernel("CSMain");
         computeTrample.SetTexture(kernel2, "Result", result2);
         computeTrample.SetFloat("radius", radius/10);
         computeTrample.SetVector("objectPos",tramplePos );
-        computeTrample.Dispatch(kernel2, 128 / 8, 128 / 8, 1);
+        computeTrample.Dispatch(kernel2, 128 / 8, 128 / 8, 1);*/
+
 
 
         Vector2 windDir = new Vector2(Mat.GetVector("_WindDirection").x, Mat.GetVector("_WindDirection").z);
         float frequency = Mat.GetFloat("_WindFrecuency");
         int kernel = compute.FindKernel("CSMain");
-
+        compute.SetFloat("radius", radius / 10);
+        compute.SetVector("objectPos", tramplePos);
+        compute.SetVector("bottomLeft", bottomLeft);
+        compute.SetVector("boundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
         compute.SetFloat("scl", fractalScale);
         compute.SetTexture(kernel, "Result", result);
         compute.SetFloat("time", Time.time);

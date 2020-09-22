@@ -79,6 +79,19 @@ public class GrassSpawner : MonoBehaviour
         }
 
     }
+
+    public Vector2 getBottomLeft()
+    {
+        spawnArea = GetComponent<BoxCollider>();
+        spawnArea.isTrigger = true;
+        spawnBounds = spawnArea.bounds;
+
+        float sizeX = spawnBounds.size.x;
+        float sizeZ = spawnBounds.size.z;
+        Vector3 pos = transform.position + new Vector3(-sizeX / 2.0f,0, -sizeZ / 2.0f);
+
+        return new Vector2(pos.x,pos.z)  ;
+    }
     // Update is called once per frame
     public void Spawn()
     {

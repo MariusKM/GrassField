@@ -14,6 +14,7 @@
 			
 			_WindDirection("Wind Direction", vector) = (1,0, 1,0)
 			_BoundsSize("Bounds Size", vector) = (0,0,0,0)
+			_BottomLeft("Bottom Left", vector) = (0,0,0,0)
 	}
 		SubShader{
 			Tags{ "Queue" = "AlphaTest" "IgnoreProjector" = "True" "RenderType" = "TransparentCutout" }
@@ -47,6 +48,7 @@
 				 half _WindStrength;
 				 float3 _WindDirection;
 				 float2 _BoundsSize;
+				 float2 _BottomLeft;
 
 				 // our vert modification function
 				 void vert(inout appdata_full v)
@@ -57,10 +59,11 @@
 					 // this is the equivalent of Transform.TransformPoint on the scripting side
 					 float4 worldSpaceVertex = mul(unity_ObjectToWorld, localSpaceVertex);
 					 float2 worldSpaceNorm = worldSpaceVertex.xz;
+					 worldSpaceNorm.x -= _BottomLeft.x;
 					 worldSpaceNorm.x /= _BoundsSize.x;
 				
 					 worldSpaceNorm.x = 1 - (worldSpaceNorm.x * 1);
-
+					 worldSpaceNorm.y -= _BottomLeft.y;
 					 worldSpaceNorm.y /= _BoundsSize.y;
 				 
 					 worldSpaceNorm.y = 1 - (worldSpaceNorm.y * 1);
@@ -72,8 +75,8 @@
 					 // Height of the vertex in the range (0,1)
 					 float height = (localSpaceVertex.y > 0.1) ? 1 : 0;
 					
-					 worldSpaceVertex.x +=  (_WindStrength * windSample.x* _WindDirection.x)*height;
-					 worldSpaceVertex.z +=  (_WindStrength * windSample.x* _WindDirection.z)*height;
+					 worldSpaceVertex.x +=  (_WindStrength * windSample.y* _WindDirection.x)*height;
+					 worldSpaceVertex.z +=  (_WindStrength * windSample.z* _WindDirection.z)*height;
 					 worldSpaceVertex.y -= trample.x;
 
 					 // takes the new modified position of the vert in world space and then puts it back in local space
@@ -95,14 +98,15 @@
 				 void surf(Input IN, inout SurfaceOutputStandard o) {
 					 // Albedo comes from a texture
 					 float2 worldPos = IN.worldPos.xz;
-				
+					 worldPos.x -= _BottomLeft.x;
 					 worldPos.x = worldPos.x / _BoundsSize.x;
 					 worldPos.x = 1 - (worldPos.x * 1);
+					 worldPos.y -= _BottomLeft.y;
 					 worldPos.y = worldPos.y / _BoundsSize.y;
 					 worldPos.y = 1 - (worldPos.y * 1);
 					 fixed4 cN = tex2D(_WindDistortionMap, worldPos);
 					 fixed4 c = tex2D(_MainTex, IN.uv_MainTex);
-					 o.Albedo = cN.rgb * c.rgb;
+					 o.Albedo = cN.rgb;// *c.rgb;
 					 o.Alpha = c.a;
 					 o.Metallic = _Metallic;
 					 o.Smoothness = _Glossiness;
