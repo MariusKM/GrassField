@@ -11,7 +11,7 @@ public class ComputeScript : MonoBehaviour
     public RenderTexture result;
     public Material Mat;
     [Header("Noise Stuff")]
-    [Range(0,0.5f)]
+    [Range(0,0.05f)]
     public float fractalScale = 0.05f;
     BoxCollider spawnArea;
     Bounds spawnBounds;
@@ -21,11 +21,14 @@ public class ComputeScript : MonoBehaviour
     [Range(0,1)]
     public float radius;
     private Vector2 bottomLeft;
+    bool once;
+    Vector2 _objectPos, _windDir;
+    float  _scl , _frequency;
     // Start is called before the first frame update
     void Start()
     {
 
-        result = new RenderTexture(128, 128, 24);
+        result = new RenderTexture(512, 512, 24);
         result.enableRandomWrite = true;
         result.Create();
 
@@ -49,21 +52,46 @@ public class ComputeScript : MonoBehaviour
         tramplePos = new Vector2( trampleObj.transform.position.x,trampleObj.transform.position.z);
 
 
-
-
         Vector2 windDir = new Vector2(Mat.GetVector("_WindDirection").x, Mat.GetVector("_WindDirection").z);
         float frequency = Mat.GetFloat("_WindFrecuency");
         Mat.SetVector("_ObjectPos", trampleObj.transform.position);
+
+
         int kernel = compute.FindKernel("CSMain");
-        compute.SetFloat("radius", radius / 5);
-        compute.SetVector("objectPos",tramplePos );
-        compute.SetVector("bottomLeft", bottomLeft);
-        compute.SetVector("boundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
-        compute.SetFloat("scl", fractalScale);
-        compute.SetTexture(kernel, "Result", result);
+
+
+
+        if (!once)
+        {
+            compute.SetFloat("radius", radius / 5);
+            compute.SetVector("bottomLeft", bottomLeft);
+            compute.SetVector("boundsSize", new Vector2(spawnBounds.size.x, spawnBounds.size.z));
+            once = true;
+        }
+
+        if(_objectPos != tramplePos) compute.SetVector("objectPos", tramplePos);
+        if(_windDir != windDir) compute.SetVector("windDir", windDir);
+        if(_scl != fractalScale) compute.SetFloat("scl", fractalScale);
+        if(_frequency != frequency) compute.SetFloat("frequency", frequency);   
+     /*  compute.SetVector("objectPos", tramplePos);
+       compute.SetVector("windDir", windDir);
+       compute.SetFloat("scl", fractalScale);
+       compute.SetFloat("frequency", frequency);*/
+
+
+
         compute.SetFloat("time", Time.time);
-        compute.SetFloat("frequency", frequency);
-        compute.SetVector("windDir", windDir);
-        compute.Dispatch(kernel, 128 / 8, 128 / 8, 1);
+      
+        
+        compute.SetTexture(kernel, "Result", result);
+ 
+        compute.Dispatch(kernel, 512 / 32, 512 / 32, 1);
+
+        _objectPos = tramplePos;
+        _scl = fractalScale;
+        _frequency = frequency;
+        _windDir = windDir;
+
+
     }
 }

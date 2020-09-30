@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: GrassMat
-  m_Shader: {fileID: 4800000, guid: 5446e2781e8b8814f832590f5551c99d, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4bc1671e1b21c164d94b3f9dd943c637, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -67,6 +67,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _WindDistortionMap:
+        m_Texture: {fileID: 2800000, guid: b13bb07ff3f67b84c9916fbae9aedca4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Floats:
     - _Amount: 0.152
     - _BumpScale: 1
@@ -84,9 +88,9 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WindFrecuency: 7
-    - _WindGustDistance: 0.6
-    - _WindStrength: 0.25
+    - _WindFrecuency: 16
+    - _WindGustDistance: 0.3
+    - _WindStrength: 0.37
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

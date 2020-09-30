@@ -83,14 +83,14 @@ Material:
     - _UVSec: 0
     - _WindFrecuency: 0.83
     - _WindGustDistance: 0.25
-    - _WindStrength: 1
+    - _WindStrength: 0.7
     - _ZWrite: 1
     m_Colors:
     - _BottomLeft: {r: -8.5186825, g: -8.268881, b: 0, a: 0}
     - _BoundsSize: {r: 17.037365, g: 16.537762, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ObjectPos: {r: -0.49039173, g: 10.1, b: -2.1383982, a: 0}
+    - _ObjectPos: {r: -0.49039173, g: 15.63, b: -2.1383982, a: 0}
     - _RotAxis: {r: 0, g: 1, b: 0, a: 0}
     - _WindDirection: {r: 1, g: 0, b: 1, a: 0}
     - _WindFrequency: {r: 0.05, g: 0.05, b: 0, a: 1}
