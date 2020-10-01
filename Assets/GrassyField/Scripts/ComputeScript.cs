@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class ComputeScript : MonoBehaviour
 {
+    [Header("Compute Shader Variables")]
     public ComputeShader compute;
-    public Color color;
     public MeshRenderer rend;
     public RenderTexture result;
     public Material Mat;
-    [Header("Noise Stuff")]
+    [Header("Noise Paramerters")]
     [Range(0,0.05f)]
     public float fractalScale = 0.05f;
     BoxCollider spawnArea;
     Bounds spawnBounds;
-    [Header("Trample Stuff")]
+    [Header("Trample Parameters")]
     public GameObject trampleObj;
-    public Vector2 tramplePos;
+    Vector2 tramplePos;
     [Range(0,1)]
     public float radius;
     private Vector2 bottomLeft;
     bool once;
     Vector2 _objectPos, _windDir;
-    float  _scl , _frequency;
+    float  _scl , _frequency,_radius;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,7 +55,7 @@ public class ComputeScript : MonoBehaviour
         Vector2 windDir = new Vector2(Mat.GetVector("_WindDirection").x, Mat.GetVector("_WindDirection").z);
         float frequency = Mat.GetFloat("_WindFrecuency");
         Mat.SetVector("_ObjectPos", trampleObj.transform.position);
-
+        Vector2 boundsSize = new Vector2(spawnBounds.size.x, spawnBounds.size.z);
 
         int kernel = compute.FindKernel("CSMain");
 
@@ -69,15 +69,22 @@ public class ComputeScript : MonoBehaviour
             once = true;
         }
 
-        if(_objectPos != tramplePos) compute.SetVector("objectPos", tramplePos);
+        if (_objectPos != tramplePos)
+        {
+            Vector2 pos = tramplePos;
+            float posX = tramplePos.x;
+            posX -= bottomLeft.x;
+            posX /= boundsSize.x;
+            float posY = tramplePos.y;
+            posY -= bottomLeft.y;
+            posY /= boundsSize.y;
+            compute.SetVector("objectPos", new Vector2(posX, posY));
+        }
+
         if(_windDir != windDir) compute.SetVector("windDir", windDir);
         if(_scl != fractalScale) compute.SetFloat("scl", fractalScale);
         if(_frequency != frequency) compute.SetFloat("frequency", frequency);   
-     /*  compute.SetVector("objectPos", tramplePos);
-       compute.SetVector("windDir", windDir);
-       compute.SetFloat("scl", fractalScale);
-       compute.SetFloat("frequency", frequency);*/
-
+        if(_radius != radius) compute.SetFloat("radius", radius);   
 
 
         compute.SetFloat("time", Time.time);
@@ -91,6 +98,7 @@ public class ComputeScript : MonoBehaviour
         _scl = fractalScale;
         _frequency = frequency;
         _windDir = windDir;
+        _radius = radius;
 
 
     }

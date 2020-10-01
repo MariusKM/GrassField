@@ -3,7 +3,7 @@
 		 _MainTex("Albedo and alpha (RGBA)", 2D) = "white" {}
 		  _Glossiness("Smoothness", Range(0,1)) = 0.5
 		 _Metallic("Metallic", Range(0,1)) = 0.0
-		 _Amount("Bend Amount", Range(0,1)) = 0.1
+		
 	}
 		SubShader{
 			Tags { "RenderType" = "Opaque" }
@@ -25,11 +25,7 @@
 			float _Amount;
 			void vert(inout appdata_full v, out Input o) {
 			  UNITY_INITIALIZE_OUTPUT(Input, o);
-			  if (v.vertex.y > 0.1f) {
-				  float posMod = _SinTime.w * _Amount;
-				  v.vertex.x += posMod;
-				  v.vertex.z += posMod;
-			  }
+			 
 		  }
 
 

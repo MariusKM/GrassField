@@ -60,8 +60,7 @@
 				 {
 					 float4 localSpaceVertex = v.vertex;
 
-					 // Takes the mesh's verts and turns it into a point in world space
-					 // this is the equivalent of Transform.TransformPoint on the scripting side
+			
 					 float4 worldSpaceVertex = mul(unity_ObjectToWorld, localSpaceVertex);
 					 float2 worldSpaceNorm = worldSpaceVertex.xz;
 					 worldSpaceNorm.x -= _BottomLeft.x;
@@ -72,14 +71,12 @@
 					 worldSpaceNorm.y /= _BoundsSize.y;
 
 					 worldSpaceNorm.y = 1 - (worldSpaceNorm.y * 1);
-					 float2 offset = _WindDistortionMap_ST.zw;// +(_Time.y * _WindFrecuency);
-					 float2 uv = worldSpaceNorm * _WindDistortionMap_ST.xy + offset; //_WindDistortionMap_ST.zw* _WindFrecuency*_Time.y;
-
+					 float2 offset = _WindDistortionMap_ST.zw;
+					 float2 uv = worldSpaceNorm * _WindDistortionMap_ST.xy + offset; 
 
 					 // ISSUE HERE WHEN THERE IS TILINGA AND OFFSET; THE TRAMPLE DONT WORK
 					 float3 windSample = (tex2Dlod(_WindDistortionMap, float4(uv.x,uv.y, 0, 0)).xyz);
-					 //float3 trample = (tex2Dlod(_WindDistortionMap, float4(worldSpaceNorm, 0, 0)).xyz) ;
-					 // Height of the vertex in the range (0,1)
+				
 					 float height = (localSpaceVertex.y > 0.1) ? 1 : 0;
 
 				
@@ -89,35 +86,27 @@
 					 float4 midPoint = float4(0,-0.5,0, 1); // w = 1.0, https://forum.unity.com/threads/a-vertex-position-is-a-float4-what-does-the-4th-component-represent.152809/
 					 float4 midPointWRLD = mul(unity_ObjectToWorld, midPoint);
 
-			 // Direction of camera relative to object space.
-			 // Good for reference: https://gist.github.com/unitycoder/c5847a82343a8e721035
-					 //float3 (v.normal.x,UNITY_MATRIX_IT_MV[2].y, UNITY_MATRIX_IT_MV[2].z);
 			
 					 worldSpaceVertex.x += (_WindStrength * windSample.y * _WindDirection.x) * height;
 					 worldSpaceVertex.z += (_WindStrength * windSample.z * _WindDirection.z) * height;
-					 //worldSpaceVertex.y -= windSample.x;
+				
 					 float3 viewDir = midPointWRLD - _ObjectPos;
 					 viewDir.y = 0;
 					 viewDir = normalize(viewDir);
-					 //viewDir = float3 (0.1, 2,0.1) - viewDir;
+		
 					 viewDir *= windSample.x;
 					 localSpaceVertex = mul(unity_WorldToObject, worldSpaceVertex);
 					 viewDir = mul(unity_WorldToObject, viewDir);
 			
-					 // Use quaternion to perform rotation toward view direction relative to mid-point. 
-					 float4 quaternion = rotationTo(viewDir, _RotAxis);//float3(0,-1,0)); // normal = forward, in this case.
-					 float3 offsetPoint = localSpaceVertex - midPoint; // Offset so we can rotate relative to this point.
-					 float3 rotatedPoint = rotateVector(quaternion, offsetPoint) + midPoint; // Rotate and return back to offset.
+					
+					 float4 quaternion = rotationTo(viewDir, _RotAxis);
+					 float3 offsetPoint = localSpaceVertex - midPoint; 
+					 float3 rotatedPoint = rotateVector(quaternion, offsetPoint) + midPoint; 
 					
 			
-					 // Setup regular coordinates based on rotated point.
-					// o.vertex = UnityObjectToClipPos(rotatedPoint);
+					
+					 v.vertex = float4(rotatedPoint, 1);
 
-					 // takes the new modified position of the vert in world space and then puts it back in local space
-					// v.vertex = mul(unity_WorldToObject, worldSpaceVertex);
-					// v.vertex = (windSample.x > 0) ? float4(rotatedPoint,1): mul(unity_WorldToObject, worldSpaceVertex);// mul(unity_WorldToObject, worldSpaceVertex);
-					 v.vertex = float4(rotatedPoint, 1);// mul(unity_WorldToObject, worldSpaceVertex);
-					 //v.vertex = float4(rotatedPoint,1);
 
 				 }
 				  
@@ -125,10 +114,10 @@
 				 half _Metallic;
 
 				 // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
-							 // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
-							 // #pragma instancing_options assumeuniformscaling
+				 // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
+				 // #pragma instancing_options assumeuniformscaling
 				 UNITY_INSTANCING_BUFFER_START(Props)
-					 // put more per-instance properties here
+				 // put more per-instance properties here
 				 UNITY_INSTANCING_BUFFER_END(Props)
 
 
